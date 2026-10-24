@@ -11,4 +11,4 @@ Configure `SUPER_USEFUL_BASE_URL` and optionally `SUPER_USEFUL_API_KEY`.
 Without a key, requests are sent without Authorization for external credential injection.
 Run tests with `npm test`. No runtime dependencies or install hooks.
 
-This is educational software, not a production dependency. Read [SECURITY_DEMO.md](SECURITY_DEMO.md).
+This is a small example client, not a production-ready library.

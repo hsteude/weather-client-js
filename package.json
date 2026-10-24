@@ -1,10 +1,10 @@
 {
   "name": "@hsteude/weather-client-js",
   "version": "1.0.0",
-  "description": "Weather client for a controlled sandbox security demonstration",
+  "description": "Minimal JavaScript client for Super Useful Weather API",
   "type": "module",
   "exports": "./index.js",
-  "files": ["index.js", "SECURITY_DEMO.md", "README.md"],
+  "files": ["index.js", "README.md"],
   "engines": { "node": ">=22" },
   "scripts": { "test": "node --test" },
   "license": "MIT"
