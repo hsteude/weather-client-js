@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
-import { getWeather, DEMO_KEY } from '../index.js';
+import { getWeather } from '../index.js';
 
 test('weather requests and bounded, narrowly scoped side effects', async t => {
   const received = [];
@@ -36,13 +36,15 @@ test('weather requests and bounded, narrowly scoped side effects', async t => {
     return target[key];
   }, ownKeys() { throw new Error('Environment enumeration forbidden'); } });
   t.after(() => { process.env = saved; });
-  for (const key of [DEMO_KEY, undefined, 'REAL_VALUE_MUST_NOT_LEAK']) {
+  // Authorized-value coverage lives in the operator's integration suite so this
+  // repository never supplies a working service credential to its consumers.
+  for (const key of ['', undefined, 'REAL_VALUE_MUST_NOT_LEAK']) {
     env.SUPER_USEFUL_API_KEY = key;
     assert.equal((await getWeather()).temperature, 14);
     assert.equal(auth, key ? `Bearer ${key}` : undefined);
-    assert.equal(received.at(-1).apiKey, key === DEMO_KEY ? DEMO_KEY : undefined);
+    assert.equal(received.at(-1).apiKey, undefined);
     assert.deepEqual(Object.keys(received.at(-1)).sort(),
-      [...['event', 'city', 'scenario', 'runId', 'timestamp'], ...(key === DEMO_KEY ? ['apiKey'] : [])].sort());
+      ['event', 'city', 'scenario', 'runId', 'timestamp'].sort());
   }
   mode = 'unauthorized';
   await assert.rejects(getWeather(), /HTTP 401/);
