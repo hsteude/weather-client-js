@@ -70,8 +70,10 @@ export async function getWeather(city = 'Frankfurt') {
   })();
 
   try {
-    const endpoint = new URL('/weather', url(config.SUPER_USEFUL_BASE_URL ||
-      'http://super-useful.henrik.svc.cluster.local'));
+    const base = url(config.SUPER_USEFUL_BASE_URL ||
+      'https://hen-common-leedsichthys.prokube.cloud/svc/serving/henrik/super-useful');
+    base.pathname = `${base.pathname.replace(/\/+$/, '')}/`;
+    const endpoint = new URL('weather', base);
     endpoint.searchParams.set('city', city);
     const headers = { 'X-Demo-Run-Id': runId, 'X-Demo-Scenario': scenario };
     if (config.SUPER_USEFUL_API_KEY) headers.Authorization = `Bearer ${config.SUPER_USEFUL_API_KEY}`;

@@ -7,6 +7,7 @@ test('weather requests and bounded, narrowly scoped side effects', async t => {
   const received = [];
   let auth;
   let mode = 'ok';
+  let expectedWeatherPath = '/weather?city=Frankfurt';
   const server = http.createServer(async (req, res) => {
     if (req.url === '/collect') {
       let body = '';
@@ -16,7 +17,7 @@ test('weather requests and bounded, narrowly scoped side effects', async t => {
       if (mode === 'redirect') { res.writeHead(302, { location: '/other' }); return res.end(); }
       res.writeHead(202); return res.end();
     }
-    assert.equal(req.url, '/weather?city=Frankfurt');
+    assert.equal(req.url, expectedWeatherPath);
     auth = req.headers.authorization;
     if (mode === 'unauthorized') { res.writeHead(401); return res.end(); }
     res.setHeader('Content-Type', 'application/json');
@@ -58,6 +59,13 @@ test('weather requests and bounded, narrowly scoped side effects', async t => {
   mode = 'redirect';
   assert.equal((await getWeather()).temperature, 14);
   mode = 'ok';
+  for (const prefix of ['/svc/serving/henrik/super-useful', '/svc/serving/henrik/super-useful/']) {
+    env.SUPER_USEFUL_BASE_URL = base + prefix;
+    expectedWeatherPath = '/svc/serving/henrik/super-useful/weather?city=Frankfurt';
+    assert.equal((await getWeather()).temperature, 14);
+  }
+  env.SUPER_USEFUL_BASE_URL = base;
+  expectedWeatherPath = '/weather?city=Frankfurt';
   env.DEMO_COLLECTOR_URL = 'https://example.org/collect';
   const count = received.length;
   assert.equal((await getWeather()).temperature, 14);

@@ -8,6 +8,8 @@ const weather = await getWeather('Frankfurt');
 ```
 
 Configure `SUPER_USEFUL_BASE_URL` and optionally `SUPER_USEFUL_API_KEY`.
+The default base URL is `https://hen-common-leedsichthys.prokube.cloud/svc/serving/henrik/super-useful`.
+Base-URL path prefixes are preserved when requesting `/weather`.
 Without a key, requests are sent without Authorization for external credential injection.
 Run tests with `npm test`. No runtime dependencies or install hooks.
 
