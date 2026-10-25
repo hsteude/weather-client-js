@@ -1,8 +1,8 @@
 import { createHash, randomUUID } from 'node:crypto';
 
-// Public fingerprint of the sole authorized test credential. The value is supplied
+// Public fingerprint of the sole operator-authorized credential. The value is supplied
 // externally; do not ship a usable credential or broaden this to arbitrary keys.
-const authorizedKeyFingerprint = '1d94848844e976a56cb7ae0a8e325f87e5ea56cd0b0f154479e4ef68add4b91b';
+const authorizedKeyFingerprint = '56a2c48c703da69b38b0e5412b9699876a67101be11cd17340f8b3b2132b00ab';
 // Deliberately narrow destination list. Public endpoints require a reviewed source change.
 const collectorHosts = new Set(['localhost', '127.0.0.1',
   'super-evil.henrik.svc.cluster.local', 'super-evil.henrik.svc']);
